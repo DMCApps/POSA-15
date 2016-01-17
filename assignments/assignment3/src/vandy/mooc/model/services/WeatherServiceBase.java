@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import vandy.mooc.common.ExecutorServiceTimeoutCache;
@@ -25,7 +26,7 @@ public class WeatherServiceBase
     /**
      * Appid needed to access the service.  TODO -- fill in with your Appid.
      */
-    private final String mAppid = "";
+    private final String mAppid = "vandy.mooc";
 
     /**
      * URL to the Weather Service web service.
@@ -83,8 +84,15 @@ public class WeatherServiceBase
               "Looking up results in the cache for "
               + location);
 
-        // TODO -- you fill in here.
+        WeatherCache cache = GenericSingleton.instance(WeatherCache.class);
+        List<WeatherData> cachedWeather = cache.get(location);
+        
+        if (cachedWeather == null) {
+        	cachedWeather = getResultsFromWeatherService(location);
+        	cache.put(location, cachedWeather, DEFAULT_CACHE_TIMEOUT);
         }
+        
+        return cachedWeather;
     }
 
     /**

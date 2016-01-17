@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import vandy.mooc.model.aidl.WeatherData;
+import vandy.mooc.model.aidl.WeatherDataJsonParser;
 import vandy.mooc.model.aidl.WeatherRequest;
 import vandy.mooc.model.aidl.WeatherResults;
 import android.content.Context;
@@ -48,6 +49,7 @@ public class WeatherServiceAsync
      */
     public static Intent makeIntent(Context context) {
         // TODO -- you fill in here.
+    	return new Intent(context, WeatherServiceAsync.class);
     }
     
     /**
@@ -109,6 +111,13 @@ public class WeatherServiceAsync
             public void getCurrentWeather(final String location,
                                           final WeatherResults callback) {
                 // TODO -- you fill in here.
+            	
+            	getWeatherResults(location);
+            	
+            	WeatherDataJsonParser parser = new WeatherDataJsonParser();
+            	WeatherData results = parser.parseJsonStream(is);
+            	
+            	callback.sendResults(results);
             }
         };
 }

@@ -1,8 +1,10 @@
 package vandy.mooc.model.aidl;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +33,12 @@ public class WeatherDataJsonParser {
     public List<WeatherData> parseJsonStream(InputStream inputStream)
         throws IOException {
 
+    	InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        JsonReader reader = new JsonReader(bufferedReader);
+       
+        return parseJsonWeatherDataArray(reader);
         // TODO -- you fill in here.
-        }
     }
 
     /**
@@ -42,6 +48,7 @@ public class WeatherDataJsonParser {
     public List<WeatherData> parseJsonWeatherDataArray(JsonReader reader)
         throws IOException {
         // TODO -- you fill in here.
+    	return new ArrayList<WeatherData>();
     }
 
     /**
@@ -51,6 +58,7 @@ public class WeatherDataJsonParser {
         throws IOException {
 
         // TODO -- you fill in here.
+    	return new WeatherData();
     }
     
     /**
@@ -58,6 +66,7 @@ public class WeatherDataJsonParser {
      */
     public List<Weather> parseWeathers(JsonReader reader) throws IOException {
         // TODO -- you fill in here.
+    	return new ArrayList<Weather>();
     }
 
     /**
@@ -65,6 +74,7 @@ public class WeatherDataJsonParser {
      */
     public Weather parseWeather(JsonReader reader) throws IOException {
         // TODO -- you fill in here.
+    	return new Weather();
     }
 
     /**
@@ -73,6 +83,7 @@ public class WeatherDataJsonParser {
     public Main parseMain(JsonReader reader) 
         throws IOException {
         // TODO -- you fill in here.
+    	return new Main();
     }
 
     /**
@@ -80,6 +91,7 @@ public class WeatherDataJsonParser {
      */
     public Wind parseWind(JsonReader reader) throws IOException {
         // TODO -- you fill in here.
+    	return new Wind();
     }
 
     /**
@@ -88,5 +100,6 @@ public class WeatherDataJsonParser {
     public Sys parseSys(JsonReader reader)
         throws IOException {
         // TODO -- you fill in here.
+    	return new Sys();
     }
 }
