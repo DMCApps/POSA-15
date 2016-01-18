@@ -37,6 +37,7 @@ public class WeatherServiceSync
      */
     public static Intent makeIntent(Context context) {
         // TODO -- you fill in here.
+    	return new Intent(context, WeatherServiceSync.class);
     }
 
     /**
@@ -71,5 +72,7 @@ public class WeatherServiceSync
                 throws RemoteException {
 
                 // TODO -- you fill in here.
+            	return getWeatherResults(location);
+            }
         };
 }

@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.RemoteException;
 import android.util.Log;
 
 /**
@@ -106,18 +107,26 @@ public class WeatherServiceAsync
              * method, which forwards to getWeatherResults() to obtain
              * the results and then sends these results back to the
              * client via the callback.
+             * @throws RemoteException 
              */
             @Override
             public void getCurrentWeather(final String location,
-                                          final WeatherResults callback) {
+                                          final WeatherResults callback) throws RemoteException {
                 // TODO -- you fill in here.
             	
-            	getWeatherResults(location);
-            	
-            	WeatherDataJsonParser parser = new WeatherDataJsonParser();
-            	WeatherData results = parser.parseJsonStream(is);
-            	
-            	callback.sendResults(results);
+            	List<WeatherData> weatherData = getWeatherResults(location);
+
+            	try {
+	            	if (weatherData != null && weatherData.size() > 0) {
+	            		callback.sendResults(weatherData.get(0));
+	            	}       
+	            	else {
+	    				callback.sendResults(null);
+	            	}
+				} catch (RemoteException e) {
+					e.printStackTrace();
+					callback.sendError(e.getMessage());
+				} 
             }
         };
 }

@@ -8,6 +8,8 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import vandy.mooc.model.aidl.WeatherData.Main;
 import vandy.mooc.model.aidl.WeatherData.Sys;
 import vandy.mooc.model.aidl.WeatherData.Weather;
@@ -33,12 +35,13 @@ public class WeatherDataJsonParser {
     public List<WeatherData> parseJsonStream(InputStream inputStream)
         throws IOException {
 
-    	InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        JsonReader reader = new JsonReader(bufferedReader);
-       
-        return parseJsonWeatherDataArray(reader);
         // TODO -- you fill in here.
+    	try (JsonReader reader =
+                new JsonReader(new InputStreamReader(inputStream,
+                                                     "UTF-8"))) {
+       
+    		return parseJsonWeatherDataArray(reader);
+    	}
     }
 
     /**
@@ -47,8 +50,18 @@ public class WeatherDataJsonParser {
      */
     public List<WeatherData> parseJsonWeatherDataArray(JsonReader reader)
         throws IOException {
+
         // TODO -- you fill in here.
-    	return new ArrayList<WeatherData>();
+    	reader.beginArray();
+    	
+    	List<WeatherData> weatherDataItems = new ArrayList<WeatherData>();
+
+        while (reader.hasNext()) 
+        	weatherDataItems.add(parseJsonWeatherData(reader));
+        
+        reader.endArray();
+    	
+    	return weatherDataItems;
     }
 
     /**
@@ -56,9 +69,45 @@ public class WeatherDataJsonParser {
      */
     public WeatherData parseJsonWeatherData(JsonReader reader) 
         throws IOException {
+    	
+        reader.beginObject();
 
         // TODO -- you fill in here.
-    	return new WeatherData();
+    	WeatherData weatherData = new WeatherData();
+    	
+    	while (reader.hasNext()) {
+    		String name = reader.nextName();
+    		switch(name) {
+    		case WeatherData.cod_JSON:
+    			weatherData.setCod(reader.nextLong());
+    			break;
+    		case WeatherData.dt_JSON:
+    			weatherData.setDate(reader.nextLong());
+    			break;
+    		case WeatherData.message_JSON:
+    			weatherData.setMessage(reader.nextString());
+    			break;
+    		case WeatherData.name_JSON:
+    			weatherData.setName(reader.nextString());
+    			break;
+    		case WeatherData.main_JSON:
+    			weatherData.setMain(parseMain(reader));
+    			break;
+    		case WeatherData.sys_JSON:
+    			weatherData.setSys(parseSys(reader));
+    			break;
+    		case WeatherData.weather_JSON:
+    			weatherData.setWeathers(parseWeathers(reader));
+    			break;
+    		case WeatherData.wind_JSON:
+    			weatherData.setWind(parseWind(reader));
+    			break;
+    		}
+    	}
+    	
+        reader.endObject();
+
+    	return weatherData;
     }
     
     /**
@@ -66,7 +115,17 @@ public class WeatherDataJsonParser {
      */
     public List<Weather> parseWeathers(JsonReader reader) throws IOException {
         // TODO -- you fill in here.
-    	return new ArrayList<Weather>();
+    	reader.beginArray();
+    	
+    	List<Weather> weatherItems = new ArrayList<Weather>();
+
+        while (reader.hasNext())  {
+        	weatherItems.add(parseWeather(reader));
+        }
+        
+        reader.endArray();
+    	
+    	return weatherItems;
     }
 
     /**
@@ -74,7 +133,19 @@ public class WeatherDataJsonParser {
      */
     public Weather parseWeather(JsonReader reader) throws IOException {
         // TODO -- you fill in here.
-    	return new Weather();
+    	reader.beginObject();
+    	Weather weather = new Weather();
+    	
+    	while (reader.hasNext()) {
+    		String name = reader.nextName();
+    		switch(name) {
+    		case Weather.id_JSON:
+    			weather.setId(reader.nextLong());
+    		}
+    	}
+    	
+    	reader.endObject();
+    	return weather;
     }
 
     /**
