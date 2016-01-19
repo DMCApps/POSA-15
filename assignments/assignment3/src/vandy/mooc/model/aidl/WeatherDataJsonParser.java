@@ -141,6 +141,16 @@ public class WeatherDataJsonParser {
     		switch(name) {
     		case Weather.id_JSON:
     			weather.setId(reader.nextLong());
+    			break;
+    		case Weather.icon_JSON:
+    			weather.setIcon(reader.nextString());
+    			break;
+    		case Weather.description_JSON:
+    			weather.setDescription(reader.nextString());
+    			break;
+    		case Weather.main_JSON:
+    			weather.setMain(reader.nextString());
+    			break;
     		}
     	}
     	
@@ -154,7 +164,26 @@ public class WeatherDataJsonParser {
     public Main parseMain(JsonReader reader) 
         throws IOException {
         // TODO -- you fill in here.
-    	return new Main();
+    	reader.beginObject();
+    	Main main = new Main();
+    	
+    	while (reader.hasNext()) {
+    		String name = reader.nextName();
+    		switch(name) {
+    		case Main.humidity_JSON:
+    			main.setHumidity(reader.nextLong());
+    			break;
+    		case Main.pressure_JSON:
+    			main.setPressure(reader.nextDouble());
+    			break;
+    		case Main.temp_JSON:
+    			main.setTemp(reader.nextDouble());
+    			break;
+    		}
+    	}
+    	
+    	reader.endObject();
+    	return main;
     }
 
     /**
@@ -162,7 +191,23 @@ public class WeatherDataJsonParser {
      */
     public Wind parseWind(JsonReader reader) throws IOException {
         // TODO -- you fill in here.
-    	return new Wind();
+    	reader.beginObject();
+    	Wind wind = new Wind();
+
+    	while (reader.hasNext()) {
+    		String name = reader.nextName();
+	    	switch(name) {
+		    	case Wind.deg_JSON:
+		    		wind.setDeg(reader.nextDouble());
+		    		break;
+		    	case Wind.speed_JSON:
+		    		wind.setSpeed(reader.nextDouble());
+		    		break;
+	    	}
+    	}
+    	
+    	reader.endObject();
+    	return wind;
     }
 
     /**
@@ -171,6 +216,29 @@ public class WeatherDataJsonParser {
     public Sys parseSys(JsonReader reader)
         throws IOException {
         // TODO -- you fill in here.
-    	return new Sys();
+    	reader.beginObject();
+    	Sys system = new Sys();
+
+    	while (reader.hasNext()) {
+    		String name = reader.nextName();
+	    	switch(name) {
+	    	case Sys.country_JSON:
+	    		system.setCountry(reader.nextString());
+	    		break;
+	    	case Sys.message_JSON:
+	    		system.setMessage(reader.nextDouble());
+	    		break;
+	    	case Sys.sunrise_JSON:
+	    		system.setSunrise(reader.nextLong());
+	    		break;
+	    	case Sys.sunset_JSON:
+	    		system.setSunset(reader.nextLong());
+	    		break;
+	    	}
+    	}
+    	
+
+    	reader.endObject();
+    	return system;
     }
 }
