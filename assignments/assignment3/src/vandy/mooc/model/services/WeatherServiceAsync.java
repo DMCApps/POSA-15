@@ -154,7 +154,7 @@ public class WeatherServiceAsync
 
                 };
 
-                // Determine if we're on the UI thread or not.  
+                // Determine if we're on the UI thread or not.
                 if (Utils.runningOnUiThread())
                     // Execute getLocationForWeatherRunnable in a separate
                     // thread if this service has been configured to

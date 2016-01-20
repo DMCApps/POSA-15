@@ -51,15 +51,14 @@ public class WeatherDataJsonParser {
     public List<WeatherData> parseJsonWeatherDataArray(JsonReader reader)
         throws IOException {
 
-        // TODO -- you fill in here.
-    	reader.beginObject();
+        // TODO -- you fill in here.  
+    	// No array to begin.
     	
     	List<WeatherData> weatherDataItems = new ArrayList<WeatherData>();
 
-        while (reader.hasNext()) {
+        while (reader.hasNext() && reader.peek() != JsonToken.END_DOCUMENT) {
         	weatherDataItems.add(parseJsonWeatherData(reader));
         }      
-        reader.endObject();
     	
     	return weatherDataItems;
     }
@@ -102,6 +101,9 @@ public class WeatherDataJsonParser {
     		case WeatherData.wind_JSON:
     			weatherData.setWind(parseWind(reader));
     			break;
+            default:
+                reader.skipValue();
+                break;
     		}
     	}
     	
@@ -151,6 +153,9 @@ public class WeatherDataJsonParser {
     		case Weather.main_JSON:
     			weather.setMain(reader.nextString());
     			break;
+            default:
+                reader.skipValue();
+                break;
     		}
     	}
     	
@@ -179,6 +184,9 @@ public class WeatherDataJsonParser {
     		case Main.temp_JSON:
     			main.setTemp(reader.nextDouble());
     			break;
+            default:
+                reader.skipValue();
+                break;
     		}
     	}
     	
@@ -203,6 +211,9 @@ public class WeatherDataJsonParser {
 		    	case Wind.speed_JSON:
 		    		wind.setSpeed(reader.nextDouble());
 		    		break;
+	            default:
+	                reader.skipValue();
+	                break;
 	    	}
     	}
     	
@@ -234,6 +245,9 @@ public class WeatherDataJsonParser {
 	    	case Sys.sunset_JSON:
 	    		system.setSunset(reader.nextLong());
 	    		break;
+            default:
+                reader.skipValue();
+                break;
 	    	}
     	}
     	
