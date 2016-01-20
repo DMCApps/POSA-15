@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import vandy.mooc.common.Utils;
 import vandy.mooc.model.aidl.WeatherData;
 import vandy.mooc.model.aidl.WeatherDataJsonParser;
 import vandy.mooc.model.aidl.WeatherRequest;
@@ -113,20 +114,57 @@ public class WeatherServiceAsync
             public void getCurrentWeather(final String location,
                                           final WeatherResults callback) throws RemoteException {
                 // TODO -- you fill in here.
-            	
-            	List<WeatherData> weatherData = getWeatherResults(location);
+                final Runnable getLocationForWeatherRunnable = new Runnable() {
+                    public void run() {
+                        try {
+                            // Call the Weather Web service to get the
+                            // list of possible expansions of the
+                            // designated location.
+                            final List<WeatherData> weatherData =
+                                getWeatherResults(location);
 
-            	try {
-	            	if (weatherData != null && weatherData.size() > 0) {
-	            		callback.sendResults(weatherData.get(0));
-	            	}       
-	            	else {
-	    				callback.sendResults(null);
-	            	}
-				} catch (RemoteException e) {
-					e.printStackTrace();
-					callback.sendError(e.getMessage());
-				} 
+                            if (weatherData != null && weatherData.size() > 0) {
+                                Log.d(TAG, "" 
+                                      + weatherData.size() 
+                                      + " result(s) for location: "
+                                      + location);
+                                // Invoke a one-way callback to send
+                                // the weather data back to
+                                // the client.
+                                callback.sendResults(weatherData.get(0));
+                            } else {
+                                Log.d(TAG, 
+                                      "No results for \""
+                                      + location
+                                      + "\" found");
+
+                                // Invoke a one-way callback to send
+                                // an error message back to the
+                                // client.es
+                                callback.sendError("No weather data for \""
+                                                   + location
+                                                   + "\" found");
+                            }
+                        } catch (Exception e) {
+                            Log.d(TAG,
+                                  "getCurrentWeather() "
+                                  + e);
+                        }
+                    }
+
+                };
+
+                // Determine if we're on the UI thread or not.  
+                if (Utils.runningOnUiThread())
+                    // Execute getLocationForWeatherRunnable in a separate
+                    // thread if this service has been configured to
+                    // be collocated with an Activity.
+                    mExecutorService.execute(getLocationForWeatherRunnable);
+                else 
+                    // Run the getLocationForWeatherRunnable in the pool
+                    // thread if this service has been configured to
+                    // run in its own process.
+                	getLocationForWeatherRunnable.run();
             }
         };
 }

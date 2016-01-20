@@ -72,7 +72,26 @@ public class WeatherServiceSync
                 throws RemoteException {
 
                 // TODO -- you fill in here.
-            	return getWeatherResults(location);
+
+                // Call the Acronym Web service to get the list of
+                // possible expansions of the designated acronym.
+                final List<WeatherData> weatherData = 
+                		getWeatherResults(location);
+
+                if (weatherData != null) {
+                    Log.d(TAG, "" 
+                          + weatherData.size() 
+                          + " results for location: " 
+                          + location);
+
+                    // Return the list of acronym expansions back to
+                    // the AcronymModel.
+                    return weatherData;
+                } else 
+                    // Create a zero-sized acronymResults object to
+                    // indicate to the caller that the acronym had no
+                    // expansions.
+                    return new ArrayList<WeatherData>();
             }
         };
 }

@@ -60,6 +60,9 @@ public class WeatherServiceBase
         super.onCreate();
 
         // TODO -- you fill in here.
+        // Increment the reference count for the WeatherCache
+        // singleton, which is shared by both Services.
+        GenericSingleton.instance(WeatherCache.class).incrementRefCount();
     }
 
     /**
@@ -71,6 +74,12 @@ public class WeatherServiceBase
         super.onDestroy();
 
         // TODO -- you fill in here.
+        // Decrement the reference count for the AcronymCache
+        // singleton, which shuts it down when the count drops to 0.
+        // When this happens, the GenericSingleton needs to remove the
+        // AcronymCache.class entry in its map.
+        if (GenericSingleton.instance(WeatherCache.class).decrementRefCount() == 0)
+            GenericSingleton.remove(WeatherCache.class);
     }
 
     /**
